@@ -12,8 +12,9 @@ function App() {
 
   useEffect(() => {
     async function getMovies() {
-      const response = await axios("/api/v2/getMovies")
-      setMovies(response.data.Movies.Search);
+      const response = await axios("/api/v2/getMovies");
+      // console.log(response);
+      setMovies(response.data.Movies);
     }
 
     getMovies();
@@ -27,7 +28,7 @@ function App() {
         <Route path='/' element={<Home Movies={movies} />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/movie/:slug/:id' element={<MoviePage/>}/>
+        <Route path='/movie/:slug/:id/:now' element={<MoviePage/>}/>
       </Routes>
     </div>
   )

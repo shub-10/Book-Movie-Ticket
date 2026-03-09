@@ -1,41 +1,48 @@
 import { NavLink, useParams } from 'react-router-dom';
+import {useState, useEffect} from 'react';
+import axios from 'axios';
 const Home = (props) => {
 
-  const Movies = props.Movies;
+  const city = props.selectedCity;
+  // console.log(city);
+  const [movies, setMovies] = useState([]);
+  const serverBaseUrl = import.meta.env.VITE_SERVER_BASE_URL;
+  useEffect(() => {
+    async function getMovies() {
+      const response = await axios.get(`${serverBaseUrl}/api/v2/movies`, {params: { city }} );
+      // console.log(response);
+      setMovies(response.data.Movies);
+    }
+
+    getMovies();
+  }, [city]);
   const createSlug = (title) => {
     return title.toLowerCase().replace(/\s+/g, "-");
   };
 
   const date = new Date();
   // console.log("Movies:" ,Movies.length);
-  const months = [
-    { month: "Jan", NoOfDays: 31 },
-    { month: "Feb", NoOfDays: 28 },
-    { month: "Mar", NoOfDays: 31 },
-    { month: "April", NoOfDays: 30 },
-    { month: "May", NoOfDays: 31 },
-    { month: "June", NoOfDays: 30 },
-    { month: "July", NoOfDays: 31 },
-    { month: "Aug", NoOfDays: 31 },
-    { month: "Sept", NoOfDays: 30 },
-    { month: "Oct", NoOfDays: 31 },
-    { month: "Nov", NoOfDays: 30 },
-    { month: "Dec", NoOfDays: 31 }
-  ];
+  // const months = [
+  //   { month: "Jan", NoOfDays: 31 },{ month: "Feb", NoOfDays: 28 },{ month: "Mar", NoOfDays: 31 },
+  //   { month: "April", NoOfDays: 30 },{ month: "May", NoOfDays: 31 },{ month: "June", NoOfDays: 30 },
+  //   { month: "July", NoOfDays: 31 },{ month: "Aug", NoOfDays: 31 },{ month: "Sept", NoOfDays: 30 },
+  //   { month: "Oct", NoOfDays: 31 },{ month: "Nov", NoOfDays: 30 },{ month: "Dec", NoOfDays: 31 }
+  // ];
 
   const days = ["Sun", "Mon", "Tue", "Wed", "Thru", "Fri", "Sat"];
 
-  const Month = months[date.getMonth()].month;
   const Today = date.getDate();
   const day = date.getDay();
   const Year = date.getFullYear();
+  const Month = date.getMonth();
+  const todayIso = new Date().toISOString().slice(0, 10);
   return (
     <div className="w-full px-8 py-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-8 bg-gray-50">
-  {Movies &&
-    Movies.map((movie) => (
+  {
+    movies.map((movie) => (
       <NavLink
         key={movie.imdbId}
-        to={`/movie/${createSlug(movie.title)}/${movie.imdbId}/${Year}-${days[day]}-${Today}`}
+        to={`/${createSlug(movie.title)}/${movie.imdbId}/${todayIso}`}
         className="group"
       >
         <div className="rounded-lg overflow-hidden transition-all duration-300 hover:-translate-y-1">

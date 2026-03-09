@@ -1,98 +1,130 @@
-import { useParams } from 'react-router-dom'
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { NavLink } from 'react-router-dom'
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
-const MoviePage = () => {
-  const [movie, setMovie] = useState([]);
+const MoviePage = ({ selectedCity }) => {
+  const { imdbId, date: routeDate } = useParams();
+  const serverBaseUrl = import.meta.env.VITE_SERVER_BASE_URL;
 
-  // const serverBaseUrl = import.meta.env.VITE_SERVER_BASE_URL;
-  const { slug, id, now } = useParams();
+  const [movie, setMovie] = useState(null);
+  const [theatres, setTheatres] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(
+    routeDate || new Date().toISOString().slice(0, 10)
+  );
+
+  const next7Days = useMemo(() => {
+    const out = [];
+    const now = new Date();
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(now);
+      d.setDate(now.getDate() + i);
+      out.push({
+        iso: d.toISOString().slice(0, 10),
+        day: d.getDate(),
+        week: d.toLocaleDateString("en-US", { weekday: "short" }),
+        month: d.toLocaleDateString("en-US", { month: "short" }).toUpperCase(),
+      });
+    }
+    return out;
+  }, []);
 
   useEffect(() => {
-    async function getMovie() {
-      const res = await axios.get(`/api/v2/getMovie/${id}`)
-      console.log("res:", res);
-      setMovie(res.data.Movie);
+    async function load() {
+      const [movieRes, showsRes] = await Promise.all([
+        axios.get(`${serverBaseUrl}/api/v2/movies/${imdbId}`),
+        axios.get(`${serverBaseUrl}/api/v2/movies/${imdbId}/shows`, {
+          params: { city: selectedCity, date: selectedDate },
+        }),
+      ]);
+
+      setMovie(movieRes.data.Movie);
+      setTheatres(showsRes.data.theatres || []);
     }
 
+    load();
+  }, [imdbId, selectedCity, selectedDate, serverBaseUrl]);
 
-    getMovie();
-  }, [id]);
-  const date = new Date();
-  const months = [
-    { month: "Jan", NoOfDays: 31 },
-    { month: "Feb", NoOfDays: 28 },
-    { month: "Mar", NoOfDays: 31 },
-    { month: "April", NoOfDays: 30 },
-    { month: "May", NoOfDays: 31 },
-    { month: "June", NoOfDays: 30 },
-    { month: "July", NoOfDays: 31 },
-    { month: "Aug", NoOfDays: 31 },
-    { month: "Sept", NoOfDays: 30 },
-    { month: "Oct", NoOfDays: 31 },
-    { month: "Nov", NoOfDays: 30 },
-    { month: "Dec", NoOfDays: 31 }
-  ];
+  if (!movie) return <div className="p-6">Loading...</div>;
 
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thru", "Fri", "Sat"];
-
-  const Month = months[date.getMonth()].month;
-  const NoOfdays = months[date.getMonth()].NoOfDays;
-  const Today = date.getDate();
-  const day = date.getDay();
-  const Year = date.getFullYear();
-  const arr = [];
-
-  function setDates() {
-    let count = 0;
-
-    for (let d = Today, d2 = day; count < 3; d++, d2++) {
-      if (d > NoOfdays) d = 1;
-      if (d2 > 6) d2 = 0;
-      arr.push({ dt: d, dy: days[d2] });
-      count++;
-    }
-
-
-  }
-  setDates();
   return (
-    <div className="w-[100vw] flex flex-row justify-center">
-      <div className="w-3/4 flex flex-col gap-8">
-        {/* <div > */}
-          {
-            movie && movie.map((m) => (
-              <div className="flex flex-row gap-3"> <img src={m.poster} alt="movie-poster" className="h-[200px] w-[150px] object-cover rounded-lg" />
-                <div className="text-gray-800 flex flex-col justify-center">
-                  <p className=" text-[20px] font-semibold ">{m.title}</p>
-                </div></div>
-            ))
-          }
-        {/* </div> */}
+    <div className="max-w-5xl mx-auto p-6 space-y-6">
+      <div className="flex gap-5">
+        <div className="relative">
+          <img
+            src={movie.poster}
+            alt={movie.title}
+            className="w-36 h-44 rounded-2xl object-cover"
+          />
+          {movie.trailerUrl && (
+            <button
+              onClick={() => window.open(movie.trailerUrl, "_blank")}
+              className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-white/90 text-black font-semibold"
+            >
+              ▶
+            </button>
+          )}
+        </div>
 
-        <div className="flex flex-row gap-3">
-          <div className="bg-gray-200 rounded-full flex flex-col justify-center items-center text-gray-600 text-[15px]"><p className="-rotate-90">{Month.toUpperCase()}</p></div>
-          <div className="flex flex-row gap-5">
-            {
-              arr.map((item, index) => (
-                <NavLink key={item.dt} to={`/movie/${slug}/${id}/${Year}-${item.dy}-${item.dt}`} className={({ isActive }) => isActive ? "w-[40px] px-2 py-1 bg-gray-950 text-white rounded-lg cursor-pointer" : "px-3 py-2  text-black rounded-lg cursor-pointer"}>
-                  <div className="flex flex-col items-center">
-                    <p className="font-bold">{item.dt}</p>
-                    <p className="text-[15px] text-gray-500">{item.dy} </p>
-                  </div>
-
-                </NavLink>
-
-              ))
-            }
-          </div>
-
-
+        <div className="flex flex-col justify-center">
+          <h1 className="text-xl font-semibold">{movie.title}</h1>
+          <p className="text-gray-600 mt-2">
+            {movie.certificate || "UA"} | {(movie.Languages || []).join(", ")}{" "}
+            |{" "}
+            {movie.durationMins
+              ? `${Math.floor(movie.durationMins / 60)} hr ${movie.durationMins % 60} min`
+              : "2 hr 20 min"}
+          </p>
         </div>
       </div>
+
+      <div className="flex items-center gap-5 overflow-x-auto">
+        <div className="w-10 h-14 rounded-2xl bg-gray-200 text-gray-600 flex items-center justify-center">
+          <span className="text-sm -rotate-90">
+            {next7Days[0]?.month}
+          </span>
+        </div>
+
+        {next7Days.map((d) => (
+          <button
+            key={d.iso}
+            onClick={() => setSelectedDate(d.iso)}
+            className={
+              selectedDate === d.iso
+                ? "w-10 h-14 rounded-xl bg-black text-white"
+                : "w-10 h-14 rounded-xl border border-gray-200 bg-white"
+            }
+          >
+            <p className="text-lg font-semibold leading-6">{d.day}</p>
+            <p className="text-sm text-gray-500">{d.week}</p>
+          </button>
+        ))}
+      </div>
+
+
+      <div className="bg-gray-100 p-3 rounded text-gray-600 text-sm">
+        <span className="mr-5">● Available</span>
+        <span className="mr-5 text-yellow-500">● Filling fast</span>
+        <span className="text-orange-500">● Almost full</span>
+      </div>
+
+      <div className="space-y-4">
+        {theatres.map((t) => (
+          <div key={t.theatre._id} className="border rounded-xl p-4">
+            <p className="font-semibold text-xl">{t.theatre.name}</p>
+            <p className="text-gray-500 text-sm">{t.theatre.location}</p>
+
+            <div className="flex flex-wrap gap-3 mt-4">
+              {t.shows.map((s) => (
+                <button key={s._id} className="px-6 py-3 border rounded-2xl">
+                  {s.showtime}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default MoviePage;

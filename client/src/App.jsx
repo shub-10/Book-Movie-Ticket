@@ -8,27 +8,27 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 function App() {
 
-  const [movies, setMovies] = useState([]);
-
+  const [cities, setCities] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("Delhi");
+  const serverBaseUrl = import.meta.env.VITE_SERVER_BASE_URL;
   useEffect(() => {
-    async function getMovies() {
-      const response = await axios("/api/v2/getMovies");
-      // console.log(response);
-      setMovies(response.data.Movies);
-    }
+    const fetchCities = async () => {
+      const res = await axios.get(`${serverBaseUrl}/api/v2/cities`);
+      setCities(res.data.Cities);
+    };
 
-    getMovies();
+    fetchCities();
   }, []);
 
 
   return (
     <div>
-      <Navbar />
+      <Navbar cities={cities} selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
       <Routes>
-        <Route path='/' element={<Home Movies={movies} />} />
+        <Route path='/' element={<Home selectedCity={selectedCity}/>} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/movie/:slug/:id/:now' element={<MoviePage/>}/>
+        <Route path='/:slug/:imdbId/:date' element={<MoviePage selectedCity={selectedCity} />} />
       </Routes>
     </div>
   )

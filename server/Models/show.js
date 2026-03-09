@@ -11,18 +11,33 @@ const showSchema = new mongoose.Schema({
     ref: "Theatre",
     required: true
   },
-  showtime: {
-    type: String,
-    required: true
-  },
   showdate: {
     type: Date,
     required: true
   },
-  price: {
-    type: Number,
-    required: true
-  }
-})
+  showtime:{
+    type: String
+  },
+  seatTypes: [
+    {
+      type: {
+        type: String,
+        required: true
+      },
+      price: {
+        type: Number,
+        required: true
+      },
+      totalSeats: {
+        type: Number,
+        required: true
+      },
+      availableSeats: {
+        type: Number,
+        required: true
+      }
+    }
+  ]
+}, { unique: true })
 
 module.exports = mongoose.model("Show", showSchema);

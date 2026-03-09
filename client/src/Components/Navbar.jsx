@@ -4,20 +4,13 @@ import { CiLocationOn } from "react-icons/ci";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-export const Navbar = () => {
+export const Navbar = (props) => {
   const [location, setLocation] = useState(false);
   // const [lv, setLv] = useState("Gurgoan")
-  const [cities, setCities] = useState([]);
-  const [selectedCity, setSelectedCity] = useState("Gurgaon");
-
-  useEffect(() => {
-  const fetchCities = async () => {
-    const res = await axios("/api/v2/cities");
-    setCities(res.data.Cities);
-  };
-
-  fetchCities();
-}, []);
+  const cities = props.cities;
+  const selectedCity = props.selectedCity;
+  const setSelectedCity = props.setSelectedCity;
+ 
   return (
     <div className="w-[100vw] px-4 py-2 flex flex-row border-gray-200 shadow-md mb-2">
       <div className="w-1/3 flex flex-row items-center gap-4">
@@ -25,7 +18,7 @@ export const Navbar = () => {
         </NavLink>
         <div className="text-gray-400 "> | </div>
         <div onClick={() => { setLocation(!location) }} className="relative cursor-pointer flex flex-row">
-          <span><CiLocationOn className="text-purple-500" size={23} /></span>
+         <CiLocationOn className="text-purple-500" size={23} />
           <p className="font-semibold ">{selectedCity}</p>
         
         {

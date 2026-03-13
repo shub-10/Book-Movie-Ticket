@@ -1,61 +1,100 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { CiLocationOn } from "react-icons/ci";
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-
+import { useState } from 'react';
+import { FiLogOut } from "react-icons/fi";
 export const Navbar = (props) => {
   const [location, setLocation] = useState(false);
   // const [lv, setLv] = useState("Gurgoan")
   const cities = props.cities;
   const selectedCity = props.selectedCity;
   const setSelectedCity = props.setSelectedCity;
- 
-  return (
-    <div className="w-[100vw] px-4 py-2 flex flex-row border-gray-200 shadow-md mb-2">
-      <div className="w-1/3 flex flex-row items-center gap-4">
-        <NavLink to='/' ><p className="text-[30px] font-bold whitespace-nowrap">GO FAST</p>
-        </NavLink>
-        <div className="text-gray-400 "> | </div>
-        <div onClick={() => { setLocation(!location) }} className="relative cursor-pointer flex flex-row">
-         <CiLocationOn className="text-purple-500" size={23} />
-          <p className="font-semibold ">{selectedCity}</p>
-        
-        {
-          location && (
-            <div className="absolute top-6 bg-white shadow-lg rounded-lg p-2 z-10">
-              {
-              cities.map((city)=> (
-                <p 
-                key={city._id}
-                className="cursor-pointer hover:bg-gray-100 px-3 py-1 rounded"
-                onClick={()=>{
-                  setSelectedCity(city.name);
-                  setLocation(!location)
-                  localStorage.setItem("cityId", city._id);
-                }}
-                >
-                {city.name}
-                </p>
-              ))
-              }
-            </div>
-          )
-        }
-        </div>
-      </div>
+  const { pathname } = useLocation();
 
-      <div className="w-2/3 flex justify-center items-center">
-        <div className="w-1/2 mt-2 flex justify-evenly items-center">
-          <NavLink to='/' end className={({ isActive }) => isActive ?
-            "text-pink-500 bg-pink-200 rounded-full" :
-            "text-gray-800"}>
-            <p className="text-[15px] font-bold  px-3 py-1">Movies</p>
+  const moviesActive = pathname === '/' || pathname.startsWith('/movie/');
+
+  return (
+    <div className="w-[100vw] bg-white/90 backdrop-blur border-b border-gray-100">
+      <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <NavLink to='/' className="flex items-center gap-2">
+            <span className="font-[Montserrat] text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
+              GO FAST
+            </span>
+            <span className="text-[11px] uppercase tracking-[0.25em] text-gray-400">
+              tickets
+            </span>
           </NavLink>
-          <NavLink to='/saved' className={({ isActive }) => isActive ?
-            "text-blue-500 bg-blue-200 rounded-full" : "text-gray-800"}>
-            <p className="text-[15px] font-bold px-3 py-1">Saved </p>
+
+          <div className="h-6 w-px bg-gray-200" />
+
+          <div
+            onClick={() => { setLocation(!location) }}
+            className="relative cursor-pointer flex items-center gap-2 px-3 py-2 rounded-full border border-gray-200 hover:border-gray-300 transition"
+          >
+            <CiLocationOn className="text-gray-600" size={18} />
+            <span className="text-sm font-medium text-gray-800">{selectedCity}</span>
+
+            {location && (
+              <div className="absolute top-11 left-0 bg-white shadow-lg rounded-xl p-2 z-50 border border-gray-100">
+                {cities.map((city) => (
+                  <p
+                    key={city._id}
+                    className="cursor-pointer hover:bg-gray-100 px-3 py-2 rounded-lg text-sm"
+                    onClick={() => {
+                      setSelectedCity(city.name);
+                      setLocation(!location)
+                      localStorage.setItem("cityId", city._id);
+                    }}
+                  >
+                    {city.name}
+                  </p>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <NavLink
+            to='/'
+            className={
+              moviesActive
+                ? "inline-flex items-center justify-center text-pink-700 bg-pink-100 rounded-full px-4 py-2 text-sm font-semibold"
+                : "inline-flex items-center justify-center text-gray-700 rounded-full px-4 py-2 text-sm font-semibold hover:bg-gray-100"
+            }
+          >
+            Movies
           </NavLink>
+          <NavLink
+            to='/saved'
+            className={({ isActive }) =>
+              isActive
+                ? "inline-flex items-center justify-center text-blue-700 bg-blue-100 rounded-full px-4 py-2 text-sm font-semibold"
+                : "inline-flex items-center justify-center text-gray-700 rounded-full px-4 py-2 text-sm font-semibold hover:bg-gray-100"
+            }
+          >
+            Saved
+          </NavLink>
+          {
+            !props.isloggedIn ? (
+              <NavLink
+                to="/login"
+                className="inline-flex items-center justify-center text-sm font-semibold px-4 py-2 rounded-full border border-gray-200 hover:border-gray-300"
+              >
+                Login
+              </NavLink>
+            ) : (
+              <button
+                onClick={() => {localStorage.removeItem("token");props.setisLoggedIn(false);}}
+                      className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 hover:bg-red-50 text-gray-600 hover:text-red-600 transition"
+
+                title="Logout"
+              >
+                <FiLogOut size={18} />
+              </button>
+            )
+          }
         </div>
       </div>
     </div>

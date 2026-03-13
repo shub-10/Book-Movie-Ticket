@@ -1,23 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const MoviePage = ({ selectedCity }) => {
-  const { imdbId, date: routeDate } = useParams();
-  const serverBaseUrl = import.meta.env.VITE_SERVER_BASE_URL;
+  const { slug, imdbId, date } = useParams();
 
+  const navigate = useNavigate();
+  const serverBaseUrl = import.meta.env.VITE_SERVER_BASE_URL;
+  // const [availableDates, setAvailableDates] = useState([]);
   const [movie, setMovie] = useState(null);
   const [theatres, setTheatres] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
-    routeDate || new Date().toISOString().slice(0, 10)
+    date || new Date().toISOString().slice(0, 10)
   );
-
+  
   const next7Days = useMemo(() => {
     const out = [];
     const now = new Date();
     for (let i = 0; i < 7; i++) {
       const d = new Date(now);
       d.setDate(now.getDate() + i);
+      // console.log("date: ", d.toISOString().slice(0, 10));
       out.push({
         iso: d.toISOString().slice(0, 10),
         day: d.getDate(),
@@ -27,7 +30,7 @@ const MoviePage = ({ selectedCity }) => {
     }
     return out;
   }, []);
-
+ 
   useEffect(() => {
     async function load() {
       const [movieRes, showsRes] = await Promise.all([
@@ -36,13 +39,14 @@ const MoviePage = ({ selectedCity }) => {
           params: { city: selectedCity, date: selectedDate },
         }),
       ]);
-
+      // console.log("showRes: ", showsRes);
       setMovie(movieRes.data.Movie);
       setTheatres(showsRes.data.theatres || []);
+      // setAvailableDates(showsRes.data.availableDates || []);
     }
 
     load();
-  }, [imdbId, selectedCity, selectedDate, serverBaseUrl]);
+  }, [imdbId, selectedCity, selectedDate]);
 
   if (!movie) return <div className="p-6">Loading...</div>;
 
@@ -60,7 +64,7 @@ const MoviePage = ({ selectedCity }) => {
               onClick={() => window.open(movie.trailerUrl, "_blank")}
               className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-white/90 text-black font-semibold"
             >
-              ▶
+              Play
             </button>
           )}
         </div>
@@ -69,10 +73,7 @@ const MoviePage = ({ selectedCity }) => {
           <h1 className="text-xl font-semibold">{movie.title}</h1>
           <p className="text-gray-600 mt-2">
             {movie.certificate || "UA"} | {(movie.Languages || []).join(", ")}{" "}
-            |{" "}
-            {movie.durationMins
-              ? `${Math.floor(movie.durationMins / 60)} hr ${movie.durationMins % 60} min`
-              : "2 hr 20 min"}
+            
           </p>
         </div>
       </div>
@@ -87,7 +88,11 @@ const MoviePage = ({ selectedCity }) => {
         {next7Days.map((d) => (
           <button
             key={d.iso}
-            onClick={() => setSelectedDate(d.iso)}
+            onClick={() => {
+              setSelectedDate(d.iso);
+              navigate(`/${slug}/${imdbId}/${d.iso}`, { replace: true });
+
+            }}
             className={
               selectedDate === d.iso
                 ? "w-10 h-14 rounded-xl bg-black text-white"
@@ -102,9 +107,9 @@ const MoviePage = ({ selectedCity }) => {
 
 
       <div className="bg-gray-100 p-3 rounded text-gray-600 text-sm">
-        <span className="mr-5">● Available</span>
-        <span className="mr-5 text-yellow-500">● Filling fast</span>
-        <span className="text-orange-500">● Almost full</span>
+        <span className="mr-5">Available</span>
+        <span className="mr-5 text-yellow-600">Filling fast</span>
+        <span className="text-orange-600">Almost full</span>
       </div>
 
       <div className="space-y-4">

@@ -4,6 +4,7 @@ const seed = require('./Routes/seed');
 const getCities = require('./Routes/city');
 const Auth = require('./Routes/auth');
 const dbConnection = require('./utils/db');
+const lastSeeded = require('./Routes/seedDates');
 const cors = require("cors");
 const dotenv = require('dotenv');
 dotenv.config();
@@ -24,6 +25,7 @@ app.use('/api/v2/movies', Movies);
 app.use('/api/v2/cities', getCities);
 app.use('/api/v2/auth', Auth)
 app.use('/api/v2/seed', seed);
+app.use('/api/v2/lastseeded', lastSeeded);
 
 
 app.listen(Port, ()=> {console.log(`server started... at ${Port}`)});

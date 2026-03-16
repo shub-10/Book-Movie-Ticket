@@ -7,30 +7,41 @@ const MoviePage = ({ selectedCity }) => {
 
   const navigate = useNavigate();
   const serverBaseUrl = import.meta.env.VITE_SERVER_BASE_URL;
-  // const [availableDates, setAvailableDates] = useState([]);
+  const [availableDates, setAvailableDates] = useState([]);
   const [movie, setMovie] = useState(null);
   const [theatres, setTheatres] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
     date || new Date().toISOString().slice(0, 10)
   );
-  
+
   const next7Days = useMemo(() => {
     const out = [];
     const now = new Date();
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(now);
-      d.setDate(now.getDate() + i);
-      // console.log("date: ", d.toISOString().slice(0, 10));
-      out.push({
-        iso: d.toISOString().slice(0, 10),
-        day: d.getDate(),
-        week: d.toLocaleDateString("en-US", { weekday: "short" }),
-        month: d.toLocaleDateString("en-US", { month: "short" }).toUpperCase(),
-      });
+    for (let i = 0; i < availableDates.length; i++) {
+      // Parse availableDate as UTC and convert to Asia/Kolkata
+      const utcDate = new Date(availableDates[i]);
+      const kolkataDate = new Date(
+        utcDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+      );
+      const availableDate = kolkataDate.toLocaleDateString("en-CA", {
+        timeZone: "Asia/Kolkata"
+      }); console.log("av: ", availableDate);
+      const today = new Date(
+        now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+      ).toISOString().slice(0, 10);
+      console.log("today: ", today);
+      if (availableDate >= today) {
+        out.push({
+          iso: availableDate,
+          day: kolkataDate.getDate(),
+          week: kolkataDate.toLocaleDateString("en-US", { weekday: "short" }),
+          month: kolkataDate.toLocaleDateString("en-US", { month: "short" }).toUpperCase(),
+        });
+      }
     }
     return out;
-  }, []);
- 
+  }, [availableDates]);
+
   useEffect(() => {
     async function load() {
       const [movieRes, showsRes] = await Promise.all([
@@ -39,10 +50,11 @@ const MoviePage = ({ selectedCity }) => {
           params: { city: selectedCity, date: selectedDate },
         }),
       ]);
-      // console.log("showRes: ", showsRes);
+
       setMovie(movieRes.data.Movie);
       setTheatres(showsRes.data.theatres || []);
-      // setAvailableDates(showsRes.data.availableDates || []);
+      // console.log("shows: ", showsRes);
+      setAvailableDates(showsRes.data.availableDates || []);
     }
 
     load();
@@ -73,7 +85,7 @@ const MoviePage = ({ selectedCity }) => {
           <h1 className="text-xl font-semibold">{movie.title}</h1>
           <p className="text-gray-600 mt-2">
             {movie.certificate || "UA"} | {(movie.Languages || []).join(", ")}{" "}
-            
+
           </p>
         </div>
       </div>

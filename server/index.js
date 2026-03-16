@@ -2,6 +2,7 @@ const express = require('express');
 const Movies = require('./Routes/movie')
 const seed = require('./Routes/seed');
 const getCities = require('./Routes/city');
+const Shows = require('./Routes/shows');
 const Auth = require('./Routes/auth');
 const dbConnection = require('./utils/db');
 const lastSeeded = require('./Routes/seedDates');
@@ -26,6 +27,7 @@ app.use('/api/v2/cities', getCities);
 app.use('/api/v2/auth', Auth)
 app.use('/api/v2/seed', seed);
 app.use('/api/v2/lastseeded', lastSeeded);
+app.use('/api/v2/show', Shows);
 
 
 app.listen(Port, ()=> {console.log(`server started... at ${Port}`)});

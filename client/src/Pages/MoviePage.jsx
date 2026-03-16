@@ -25,11 +25,10 @@ const MoviePage = ({ selectedCity }) => {
       );
       const availableDate = kolkataDate.toLocaleDateString("en-CA", {
         timeZone: "Asia/Kolkata"
-      }); console.log("av: ", availableDate);
+      });
       const today = new Date(
         now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
       ).toISOString().slice(0, 10);
-      console.log("today: ", today);
       if (availableDate >= today) {
         out.push({
           iso: availableDate,
@@ -60,7 +59,13 @@ const MoviePage = ({ selectedCity }) => {
     load();
   }, [imdbId, selectedCity, selectedDate]);
 
-  if (!movie) return <div className="p-6">Loading...</div>;
+  if (!movie) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
@@ -132,7 +137,7 @@ const MoviePage = ({ selectedCity }) => {
 
             <div className="flex flex-wrap gap-3 mt-4">
               {t.shows.map((s) => (
-                <button key={s._id} className="px-6 py-3 border rounded-2xl">
+                <button key={s._id} onClick={() => navigate(`/show/${s._id}/seat-layout`)} className="px-6 py-3 border rounded-2xl">
                   {s.showtime}
                 </button>
               ))}

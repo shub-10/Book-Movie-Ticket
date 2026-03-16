@@ -4,6 +4,7 @@ import Login from './Pages/Login.jsx'
 import Signup from './Pages/Signup.jsx';
 import MoviePage from './Pages/MoviePage.jsx';
 import { Navbar } from './Components/Navbar.jsx';
+import SeatLayout from './Pages/SeatLayout.jsx';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Footer from './Components/Footer.jsx';
@@ -39,6 +40,7 @@ function App() {
           <Route path='/signup' element={<Signup />} />
           <Route path='/login' element={<Login isloggedIn={isloggedIn} setisLoggedIn={setisLoggedIn} />} />
           <Route path='/:slug/:imdbId/:date' element={<MoviePage selectedCity={selectedCity} />} />
+          <Route path='/show/:showId/seat-layout' element={<SeatLayout/>}/>
         </Routes>
       </main>
       <Footer />

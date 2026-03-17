@@ -4,6 +4,7 @@ const seed = require('./Routes/seed');
 const getCities = require('./Routes/city');
 const Shows = require('./Routes/shows');
 const Auth = require('./Routes/auth');
+const makePayment = require('./Routes/payment.js');
 const dbConnection = require('./utils/db');
 const lastSeeded = require('./Routes/seedDates');
 const cors = require("cors");
@@ -27,7 +28,8 @@ app.use('/api/v2/cities', getCities);
 app.use('/api/v2/auth', Auth)
 app.use('/api/v2/seed', seed);
 app.use('/api/v2/lastseeded', lastSeeded);
-app.use('/api/v2/show', Shows);
+app.use('/api/v2/show', Shows)
+app.use('/api/v2/payment', makePayment);
 
 
 app.listen(Port, ()=> {console.log(`server started... at ${Port}`)});

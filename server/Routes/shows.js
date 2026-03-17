@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/:showId', async (req, res) => {
   try {
     const {showId} = req.params;
-    const show = await Show.findById(showId).populate("theatre", "name location").populate("movie", "title");
+    const show = await Show.findById(showId).populate("theatre").populate("movie");
     res.status(200).json({ show });
   } catch (error) {
     console.log('err: ', error);

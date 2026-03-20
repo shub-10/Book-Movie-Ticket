@@ -7,6 +7,7 @@ import axios from 'axios';
 const Login = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const selected = location.state?.selected;
   const from = location.state?.from || "/";
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
@@ -23,7 +24,7 @@ const Login = (props) => {
       if (res.status === 200) {
         localStorage.setItem('token', res.data.token);
         props.setisLoggedIn(true);
-        navigate(from);
+        navigate(from, {state: {selected}});
       }
       else if (res.status === 400) {
         alert("Login credentials are wrong")

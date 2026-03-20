@@ -17,17 +17,14 @@ const SeatLayout = () => {
     }
     load();
   }, [showId]);
-  const checkedUserLogin = () => {
-    if (!localStorage.getItem('token')) {
-      alert("Login First....");
-      navigate('/login');
-    }
-  }
+  // const checkedUserLogin = () => {
+  //   if (!localStorage.getItem('token')) {
+  //     alert("Login First....");
+  //     navigate('/login');
+  //   }
+  // }
 
-  const goToPayment = () => {
-    if (totalSelected === 0) return;
-    navigate(`/payment/${showId}`, { state: { selected } });
-  };
+  
   const makeSeats = (total, booked = 0) => {
     const seats = Array.from({ length: total / 2 }, (_, i) => ({
       id: i + 1,
@@ -61,6 +58,13 @@ const SeatLayout = () => {
     (sum, set) => sum + (set?.size || 0),
     0
   );
+  const goToPayment = () => {
+    if (totalSelected === 0) return;
+    if(!localStorage.getItem('token')){
+      navigate('/login',{ state: { from: `/payment/${showId}`, selected } });
+    }
+    else navigate(`/payment/${showId}`, { state: { selected } });
+  };
 
   return (
     <div className="max-w-5xl mx-auto p-6">
@@ -101,7 +105,7 @@ const SeatLayout = () => {
                   <button
                     key={seat.id}
                     disabled={isBooked}
-                    onClick={() => { toggleSeat(tier.type, seat.id); checkedUserLogin() }}
+                    onClick={() => { toggleSeat(tier.type, seat.id);  }}
                     className={
                       isBooked
                         ? "bg-gray-200 text-gray-400 rounded-md text-xs"

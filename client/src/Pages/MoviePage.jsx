@@ -18,7 +18,6 @@ const MoviePage = ({ selectedCity }) => {
     const out = [];
     const now = new Date();
     for (let i = 0; i < availableDates.length; i++) {
-      // Parse availableDate as UTC and convert to Asia/Kolkata
       const utcDate = new Date(availableDates[i]);
       const kolkataDate = new Date(
         utcDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })

@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Footer from './Components/Footer.jsx';
 import Saved from './Pages/Saved.jsx';
+import {Payment} from './Pages/Payment.jsx';
 function App() {
 
   const [cities, setCities] = useState([]);
@@ -41,6 +42,7 @@ function App() {
           <Route path='/login' element={<Login isloggedIn={isloggedIn} setisLoggedIn={setisLoggedIn} />} />
           <Route path='/:slug/:imdbId/:date' element={<MoviePage selectedCity={selectedCity} />} />
           <Route path='/show/:showId/seat-layout' element={<SeatLayout/>}/>
+          <Route path='/payment/:showId' element = {<Payment/>}/>
         </Routes>
       </main>
       <Footer />

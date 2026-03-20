@@ -13,7 +13,10 @@ const MoviePage = ({ selectedCity }) => {
   const [selectedDate, setSelectedDate] = useState(
     date || new Date().toISOString().slice(0, 10)
   );
+  // const todaysd = new Date();
+  // const currentTime = new Date(todaysd).toLocaleTimeString("en-IN", {timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: true});
 
+  // console.log("today is: ", todaysDate.slice(0, 10));
   const next7Days = useMemo(() => {
     const out = [];
     const now = new Date();
@@ -65,7 +68,23 @@ const MoviePage = ({ selectedCity }) => {
       </div>
     );
   }
+  const makeDateFromTime = (date, timeStr) => {
+    const [time, mer] = timeStr.split(" ");
+    let [h, m] = time.split(":").map(Number);
 
+    if (mer === "PM" && h !== 12) h += 12;
+    if (mer === "AM" && h === 12) h = 0;
+
+    const d = new Date(date);
+    d.setHours(h, m, 0, 0);
+    return d;
+  };
+  const checkTime = (stime, sdate) => {
+    const d1 = makeDateFromTime(new Date(sdate), stime);
+    const d2 = new Date();
+    if (d1 > d2) return false;
+    return true;
+  }
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
       <div className="flex gap-5">
@@ -135,11 +154,28 @@ const MoviePage = ({ selectedCity }) => {
             <p className="text-gray-500 text-sm">{t.theatre.location}</p>
 
             <div className="flex flex-wrap gap-3 mt-4">
-              {t.shows.map((s) => (
-                <button key={s._id} onClick={() => navigate(`/show/${s._id}/seat-layout`)} className="px-6 py-3 border rounded-2xl">
-                  {s.showtime}
-                </button>
-              ))}
+              {t.shows.map((s) => {
+                const isDisabled = checkTime(s.showtime, s.showdate);
+                return (
+                  (
+
+                    <button key={s._id} disabled={isDisabled} onClick={() => navigate(`/show/${s._id}/seat-layout`)} className={
+                      isDisabled
+                        ? "px-6 py-3 border rounded-2xl text-gray-400 bg-gray-100 cursor-not-allowed"
+                        : "px-6 py-3 border rounded-2xl"
+                    }>
+                      <span className="flex items-center gap-2">
+                        {s.showtime}
+                        {isDisabled && (
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-200 text-gray-500">
+                            Closed
+                          </span>
+                        )}
+                      </span>
+                    </button>
+                  )
+                )
+              })}
             </div>
           </div>
         ))}

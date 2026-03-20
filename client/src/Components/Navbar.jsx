@@ -14,8 +14,8 @@ export const Navbar = (props) => {
   const moviesActive = pathname === '/' || pathname.startsWith('/movie/');
 
   return (
-    <div className="w-[100vw] bg-white/90 backdrop-blur border-b border-gray-100">
-      <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between">
+    <div className="w-[100vw] bg-white/90 backdrop-blur border-b border-gray-100  z-50">
+      <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between ">
         <div className="flex items-center gap-4">
           <NavLink to='/' className="flex items-center gap-2">
             <span className="font-[Montserrat] text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
@@ -36,7 +36,8 @@ export const Navbar = (props) => {
             <span className="text-sm font-medium text-gray-800">{selectedCity}</span>
 
             {location && (
-              <div className="absolute top-11 left-0 bg-white shadow-lg rounded-xl p-2 z-50 border border-gray-100">
+              <div className="absolute top-11 left-0 bg-white shadow-lg rounded-xl p-2 z-[999] border border-gray-100 ">
+
                 {cities.map((city) => (
                   <p
                     key={city._id}
@@ -79,8 +80,9 @@ export const Navbar = (props) => {
           {
             !props.isloggedIn ? (
               <NavLink
-                to="/login"
+                to="/login" 
                 className="inline-flex items-center justify-center text-sm font-semibold px-4 py-2 rounded-full border border-gray-200 hover:border-gray-300"
+                state={{ from: pathname }}
               >
                 Login
               </NavLink>

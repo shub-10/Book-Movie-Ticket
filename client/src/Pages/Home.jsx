@@ -25,9 +25,9 @@ const Home = (props) => {
   const primeMovie = movies[0];
   const otherMovies = movies.slice(1);
   return (
-    <div className="w-full px-8 py-8">
+    <div className="w-full px-8 py-8 ">
       {primeMovie && (
-        <div className="max-w-6xl mx-auto mb-10">
+        <div className="max-w-6xl mx-auto mb-10 z-0">
           <div className="rounded-3xl bg-white border border-gray-100 shadow-sm overflow-hidden">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
               <div className="md:col-span-1 p-6 flex justify-center md:justify-start">
@@ -35,7 +35,7 @@ const Home = (props) => {
                   to={`/${createSlug(primeMovie.title)}/${primeMovie.imdbId}/${todayIso}`}
                   className="group block"
                 >
-                  <div className="relative w-56 sm:w-64">
+                  <div className="relative w-56 sm:w-64 z-0">
                     <img
                       src={primeMovie.poster}
                       alt={primeMovie.title}

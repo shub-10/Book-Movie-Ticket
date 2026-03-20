@@ -34,7 +34,7 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar cities={cities} selectedCity={selectedCity} setSelectedCity={setSelectedCity} isloggedIn={isloggedIn} setisLoggedIn={setisLoggedIn} />
-      <main className="flex-1 bg-gray-50">
+      <main className="flex-1 bg-gray-50 z-0">
         <Routes>
           <Route path='/' element={<Home selectedCity={selectedCity} />} />
           <Route path='/saved' element={<Saved />} />

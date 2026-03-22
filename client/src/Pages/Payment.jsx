@@ -10,7 +10,6 @@ export const Payment = () => {
   const [show, setShow] = useState(null);
   const { showId } = useParams();
   const serverBaseUrl = import.meta.env.VITE_SERVER_BASE_URL;
-  console.log("seats: ", seats);
   useEffect(() => {
     const load = async () => {
       const res = await axios.get(`${serverBaseUrl}/api/v2/show/${showId}`);

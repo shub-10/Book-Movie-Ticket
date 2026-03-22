@@ -16,14 +16,8 @@ const bookingSchema = new mongoose.Schema({
         "3d": [],
         "4dx": [],
     },
-    showDate:{
-      type: Date,
-      required: true
-    },
-    showTime: {
-      type: String,
-      required: true,
-    },
-    price: Number,
+    amount: Number,
 
 })
+
+module.exports = mongoose.model('Bookings', bookingSchema);

@@ -1,4 +1,4 @@
-const Show = require('../Models/show');
+const Show = require('../Models/show.model');
 const express = require('express');
 
 const router = express.Router();

@@ -1,5 +1,5 @@
 
-const Theatre = require('../Models/theatre');
+const Theatre = require('../Models/theatre.model');
 
 const seedTheatre = async (req, res) => {
   try {

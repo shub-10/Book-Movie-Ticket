@@ -1,5 +1,5 @@
 
-const Movie = require('../Models/movie');
+const Movie = require('../Models/movie.model');
 
 const seedMovies = async (req, res) => {
   const data = [

@@ -1,7 +1,7 @@
-const Movie = require('../Models/movie');
-const Theatre = require('../Models/theatre');
-const Show = require('../Models/show');
-const City = require('../Models/city');
+const Movie = require('../Models/movie.model');
+const Theatre = require('../Models/theatre.model');
+const Show = require('../Models/show.model');
+const City = require('../Models/city.model');
 
 
 const badRequest = (res, message) => {

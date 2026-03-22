@@ -1,7 +1,7 @@
-const Theatre = require('../Models/theatre');
-const Show = require('../Models/show');
-const Movie = require('../Models/movie');
-const SeedState = require("../Models/seedState");
+const Theatre = require('../Models/theatre.model');
+const Show = require('../Models/show.model');
+const Movie = require('../Models/movie.model');
+const SeedState = require("../Models/seedState.model");
 
 const seedShows = async (req, res) => {
   try {

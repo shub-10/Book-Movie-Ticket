@@ -1,7 +1,7 @@
 const express = require('express');
-const { seedShows } = require('../Controllers/seedShows');
-const SeedState = require("../Models/seedState");
-const { getMoviesByCity, getMovieByImdbId, getMovieShowsByCityAndDate } = require('../Controllers/movies');
+const { seedShows } = require('../Controllers/seedShows.controller');
+const SeedState = require("../Models/seedState.model");
+const { getMoviesByCity, getMovieByImdbId, getMovieShowsByCityAndDate } = require('../Controllers/movies.controller');
 
 const router = express.Router();
 

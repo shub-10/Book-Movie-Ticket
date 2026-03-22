@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const City = require('../Models/city');
-const {seedShows} = require('../Controllers/seedShows');
-const {seedMovies} = require('../Controllers/seedMovies');
-const { seedTheatre } = require('../Controllers/seedTheatre');
+const City = require('../Models/city.model');
+const {seedShows} = require('../Controllers/seedShows.controller');
+const {seedMovies} = require('../Controllers/seedMovies.controller');
+const { seedTheatre } = require('../Controllers/seedTheatre.controller');
 
 
 router.post('/movies', seedMovies)

@@ -1,4 +1,4 @@
-const seedState = require('../Models/seedState');
+const seedState = require('../Models/seedState.model');
 const express = require('express');
 
 const router = express.Router();

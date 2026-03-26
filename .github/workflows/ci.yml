@@ -1,0 +1,12 @@
+name: Movie Booking CI/CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say Hello
+        run: echo "Pipeline is working!"

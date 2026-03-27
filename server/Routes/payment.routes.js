@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.post('/pay-now', authMiddleware, amountMiddleware, paymentController.createOrder);
 router.post('/verify', authMiddleware, paymentController.verifyPayment);
+router.post('/bookings-log',authMiddleware, paymentController.logBooking)
 
 module.exports =  router;

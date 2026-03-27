@@ -11,13 +11,18 @@ const bookingSchema = new mongoose.Schema({
       ref: "Show",
       required: true
     },
-    bookedSeatTypes:{
-        "2d": [],
-        "3d": [],
-        "4dx": [],
-    },
-    amount: Number,
+    BookedSeats: [{
+      type:{
+        type: String,
+        enum: ['2D', '3D', '4DX'],
+        required: true
+      },
+      seats: [Number],
+    }],
+    Amount:{
+      type: Number
+    }
 
 })
 
-module.exports = mongoose.model('Bookings', bookingSchema);
+module.exports = mongoose.model('Booking', bookingSchema);

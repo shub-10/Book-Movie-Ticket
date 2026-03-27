@@ -1,15 +1,13 @@
 const crypto = require("crypto");
 const createRazorpayInstance = require("../config/razorpay.config");
-const dotenv = require('dotenv').config();
 const razorpayInstance = createRazorpayInstance();
-
+const Booking = require('../Models/Booking.model');
 const createOrder = async (req, res) => {
   const amountInPaise = Math.round(Number(req.amount || 0) * 100);
   const options = {
     amount: amountInPaise,
     currency: "INR",
     receipt: `rcpt_${Date.now()}`,
-    checkout_config_id: process.env.RAZORPAY_CHECKOUT_CONFIG_ID,
     notes: {
       showId: req.showId,
     },
@@ -53,5 +51,20 @@ const verifyPayment = async (req, res) => {
     return res.status(500).json({ success: false, message: "Verification failed" });
   }
 };
+const logBooking = async(req, res)=>{
+  try {
+    const {id: userId }= req.user
+    const {showId, orderamount, seatsByType} = req.body;
+    // console.log("userId: ", userId);
+    // console.log("showId: ", showId);
+    // console.log("orderAmount: ", orderamount);
+    // console.log("seat Types: ", seatsByType);
+    const booking = await Booking.create({User: userId, Show: showId, Amount: orderamount, BookedSeats: seatsByType});
+  
+    return res.status(200).json({message: "Booking logged in the DB", booking})
+  } catch (error) {
+    return res.status(500).json({message: "Booking are not logged", error});
+  }
 
-module.exports = { createOrder, verifyPayment };
+}
+module.exports = { createOrder, verifyPayment, logBooking };

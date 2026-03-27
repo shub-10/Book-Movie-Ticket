@@ -79,11 +79,11 @@ export const Payment = () => {
         },
       }
     );
-    console.log("order:", res.data);
+    // console.log("order:", res.data);
 
 
     const { order, keyId } = res.data;
-
+    const orderamount = order.amount/100;
     const options = {
       key: keyId,
       amount: order.amount,
@@ -104,6 +104,11 @@ export const Payment = () => {
           );
           if (verify.data?.success) {
             alert("Payment successful!");
+            await axios.post(`${serverBaseUrl}/api/v2/payment/bookings-log`, {showId, orderamount, seatsByType}, {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            })
             navigate('/');
           } else {
             alert("Payment verification failed.");

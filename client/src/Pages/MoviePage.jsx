@@ -13,10 +13,7 @@ const MoviePage = ({ selectedCity }) => {
   const [selectedDate, setSelectedDate] = useState(
     date || new Date().toISOString().slice(0, 10)
   );
-  // const todaysd = new Date();
-  // const currentTime = new Date(todaysd).toLocaleTimeString("en-IN", {timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: true});
-
-  // console.log("today is: ", todaysDate.slice(0, 10));
+  
   const next7Days = useMemo(() => {
     const out = [];
     const now = new Date();

@@ -34,3 +34,5 @@ app.use('/api/v2/payment', paymentRoute);
 
 app.listen(Port, ()=> {console.log(`server started... at ${Port}`)});
 dbConnection()
+
+module.exports = app;

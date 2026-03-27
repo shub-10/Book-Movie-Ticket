@@ -3,7 +3,8 @@ const express = require('express');
 
 const router = express.Router();
 
-router.get('/:showId', async (req, res) => {
+
+const getShowWithshowId = async (req, res) => {
   try {
     const {showId} = req.params;
     const show = await Show.findById(showId).populate("theatre").populate("movie");
@@ -12,6 +13,7 @@ router.get('/:showId', async (req, res) => {
     console.log('err: ', error);
     res.status(500).json({message: "Internal server error"});
   }
-})
+}
+router.get('/:showId', getShowWithshowId)
 
 module.exports = router;

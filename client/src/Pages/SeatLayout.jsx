@@ -9,26 +9,26 @@ const SeatLayout = () => {
   const serverBaseUrl = import.meta.env.VITE_SERVER_BASE_URL;
   const navigate = useNavigate();
   const [show, setShow] = useState(null);
+  const [bookedSeats, setBookedSeats] = useState(null);
   const [selected, setSelected] = useState({});
   useEffect(() => {
     const load = async () => {
-      const res = await axios.get(`${serverBaseUrl}/api/v2/show/${showId}`);
-      setShow(res.data.show);
+      const [showRes, bookedRes] = await Promise.all([
+        await axios.get(`${serverBaseUrl}/api/v2/show/${showId}`),
+        await axios.get(`${serverBaseUrl}/api/v2/booking/details/${showId}`)
+      ])
+      setShow(showRes.data.show);
+      setBookedSeats(bookedRes.data.Booked);
     }
     load();
   }, [showId]);
-  // const checkedUserLogin = () => {
-  //   if (!localStorage.getItem('token')) {
-  //     alert("Login First....");
-  //     navigate('/login');
-  //   }
-  // }
+ 
 
   
-  const makeSeats = (total, booked = 0) => {
-    const seats = Array.from({ length: total / 2 }, (_, i) => ({
+  const makeSeats = (total, booked) => {
+    const seats = Array.from({ length: total}, (_, i) => ({
       id: i + 1,
-      status: i < booked ? "booked" : "available"
+      status: booked.includes(i+1) ? "booked" : "available"
     }));
     return seats;
   };
@@ -77,7 +77,7 @@ const SeatLayout = () => {
             onClick={goToPayment}
             className="px-4 py-2 rounded-full bg-black text-white text-sm"
           >
-            MAKE PAYMENT
+            Proceed
           </button>
         </div>
       )}
@@ -89,7 +89,11 @@ const SeatLayout = () => {
         <p className="text-xs text-gray-500 mt-1 tracking-widest">SCREEN THIS WAY</p>
       </div>
       {show.seatTypes.map((tier) => {
-        const seats = makeSeats(tier.totalSeats, tier.totalSeats - tier.availableSeats);
+        let booked = [];
+        const match = bookedSeats.find(item => item.type === tier.type)
+        if(match) booked = match.seats;
+        
+        const seats = makeSeats(tier.totalSeats/2, booked);
         return (
           <div key={tier.type} className="mt-6">
             <div className="flex items-center justify-between">

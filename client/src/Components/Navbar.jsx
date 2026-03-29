@@ -3,14 +3,14 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { CiLocationOn } from "react-icons/ci";
 import { useState } from 'react';
 import { FiLogOut } from "react-icons/fi";
+
 export const Navbar = (props) => {
   const [location, setLocation] = useState(false);
-  // const [lv, setLv] = useState("Gurgoan")
   const cities = props.cities;
   const selectedCity = props.selectedCity;
   const setSelectedCity = props.setSelectedCity;
   const { pathname } = useLocation();
-
+ 
   const moviesActive = pathname === '/' || pathname.startsWith('/movie/');
 
   return (
@@ -75,7 +75,7 @@ export const Navbar = (props) => {
                 : "inline-flex items-center justify-center text-gray-700 rounded-full px-4 py-2 text-sm font-semibold hover:bg-gray-100"
             }
           >
-            Saved
+            Yours
           </NavLink>
           {
             !props.isloggedIn ? (

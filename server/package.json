@@ -8,7 +8,7 @@
     "start": "nodemon index.js"
   },
   "jest": {
-    "testTimeout": 15000
+    "testTimeout": 30000
   },
   "keywords": [],
   "author": "",

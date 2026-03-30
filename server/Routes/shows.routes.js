@@ -8,10 +8,10 @@ const getShowWithshowId = async (req, res) => {
   try {
     const {showId} = req.params;
     const show = await Show.findById(showId).populate("theatre").populate("movie");
-    res.status(200).json({ show });
+    return res.status(200).json({ show });
   } catch (error) {
     console.log('err: ', error);
-    res.status(500).json({message: "Internal server error"});
+    return res.status(500).json({message: "Internal server error"});
   }
 }
 router.get('/:showId', getShowWithshowId)

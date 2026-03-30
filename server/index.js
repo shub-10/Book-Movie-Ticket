@@ -21,7 +21,7 @@ app.use(cors({
 
 const Port = process.env.PORT;
 app.get('/health', (req, res)=>{
-  res.send("success....")
+  res.send("hehehe...")
 })
 
 app.use('/api/v2/movies', Movies);

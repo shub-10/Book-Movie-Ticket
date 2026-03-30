@@ -18,3 +18,18 @@ jobs:
 
       - name: Install dependencies
         run: cd server && npm install
+
+      - name: Run tests
+        run: cd server && npm test
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB }}
+          RAZORPAY_APIKEY: ${{ secrets.RAZORPAY_APIKEY }}
+          RAZORPAY_SECRET: ${{ secrets.RAZORPAY_SECRET }}
+
+  deploy:
+    needs: test-backend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps: 
+      - name: Deploy on Render
+        run: curl ${{secrets.RENDER_DEPLOY_HOOK_URL}}

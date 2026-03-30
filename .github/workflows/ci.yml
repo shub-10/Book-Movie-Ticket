@@ -25,6 +25,7 @@ jobs:
           MONGODB_URI: ${{ secrets.MONGODB }}
           RAZORPAY_APIKEY: ${{ secrets.RAZORPAY_APIKEY }}
           RAZORPAY_SECRET: ${{ secrets.RAZORPAY_SECRET }}
+          PORT: 3000
 
   deploy:
     needs: test-backend

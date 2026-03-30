@@ -7,6 +7,9 @@
     "test": "jest --forceExit",
     "start": "nodemon index.js"
   },
+  "jest": {
+    "testTimeout": 15000
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

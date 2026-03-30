@@ -5,8 +5,8 @@ const Show = require('../Models/show.model');
 describe('GET /api/v2/show', ()=>{
   test('should return 404 if showId is missing', async()=>{
 
-    const res = await request(app).get('/api/v2/show/invalidshow');
-    expect(res.statusCode).toBe(500);
+    const res = await request(app).get('/api/v2/show');
+    expect(res.statusCode).toBe(404);
   })
 })
 describe('GET /api/v2/show', ()=>{

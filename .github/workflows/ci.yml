@@ -22,7 +22,7 @@ jobs:
       - name: Run tests
         run: cd server && npm test
         env:
-          MONGODB_URI: ${{ secrets.MONGODB }}
+          MONGODB: ${{ secrets.MONGODB }}
           RAZORPAY_APIKEY: ${{ secrets.RAZORPAY_APIKEY }}
           RAZORPAY_SECRET: ${{ secrets.RAZORPAY_SECRET }}
           PORT: 3000

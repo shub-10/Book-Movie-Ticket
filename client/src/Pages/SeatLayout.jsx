@@ -101,7 +101,7 @@ const SeatLayout = () => {
               <span className="text-sm text-gray-500">₹{tier.price}</span>
             </div>
 
-            <div className="grid grid-cols-10 gap-5 mt-3">
+            <div className="grid grid-cols-8 gap-5 mt-3">
               {seats.map((seat) => {
                 const isSelected = selected[tier.type]?.has(seat.id);
                 const isBooked = seat.status === "booked";
@@ -112,10 +112,10 @@ const SeatLayout = () => {
                     onClick={() => { toggleSeat(tier.type, seat.id);  }}
                     className={
                       isBooked
-                        ? "bg-gray-200 text-gray-400 rounded-md text-xs"
+                        ? "bg-gray-200 text-gray-400 rounded-md text-xs flex flex-col justify-between items-center"
                         : isSelected
-                          ? "bg-blue-200 text-white border border-gray-400 rounded-md p-2 text-xs font-semibold"
-                          : "border border-gray-300 rounded-md p-2 text-xs"
+                          ? "bg-blue-200 text-white border border-gray-400 rounded-md p-2 text-xs font-semibold flex flex-col justify-between items-center"
+                          : "border border-gray-300 rounded-md p-2 text-xs flex flex-col justify-between items-center"
                     }
                   >
                     {seat.id}

@@ -6,19 +6,21 @@ import { FiLogOut } from "react-icons/fi";
 
 export const Navbar = (props) => {
   const [location, setLocation] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const cities = props.cities;
   const selectedCity = props.selectedCity;
   const setSelectedCity = props.setSelectedCity;
   const { pathname } = useLocation();
- 
+
   const moviesActive = pathname === '/' || pathname.startsWith('/movie/');
 
   return (
-    <div className="w-[100vw] bg-white/90 backdrop-blur border-b border-gray-100  z-50">
-      <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between ">
+    <div className="w-full bg-white/90 backdrop-blur border-b border-gray-100 z-50">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+
         <div className="flex items-center gap-4">
           <NavLink to='/' className="flex items-center gap-2">
-            <span className="font-[Montserrat] text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
+            <span className="font-[Montserrat] text-2xl font-extrabold tracking-tight text-gray-900">
               GO FAST
             </span>
             <span className="text-[11px] uppercase tracking-[0.25em] text-gray-400">
@@ -29,22 +31,20 @@ export const Navbar = (props) => {
           <div className="h-6 w-px bg-gray-200" />
 
           <div
-            onClick={() => { setLocation(!location) }}
-            className="relative cursor-pointer flex items-center gap-2 px-3 py-2 rounded-full border border-gray-200 hover:border-gray-300 transition"
+            onClick={() => setLocation(!location)}
+            className="relative cursor-pointer flex items-center gap-2 px-3 py-2 rounded-full border border-gray-200"
           >
             <CiLocationOn className="text-gray-600" size={18} />
             <span className="text-sm font-medium text-gray-800">{selectedCity}</span>
-
             {location && (
-              <div className="absolute top-11 left-0 bg-white shadow-lg rounded-xl p-2 z-[999] border border-gray-100 ">
-
+              <div className="absolute top-11 left-0 bg-white shadow-lg rounded-xl p-2 z-[999] border border-gray-100">
                 {cities.map((city) => (
                   <p
                     key={city._id}
                     className="cursor-pointer hover:bg-gray-100 px-3 py-2 rounded-lg text-sm"
                     onClick={() => {
                       setSelectedCity(city.name);
-                      setLocation(!location)
+                      setLocation(!location);
                       localStorage.setItem("cityId", city._id);
                     }}
                   >
@@ -56,49 +56,42 @@ export const Navbar = (props) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <NavLink
-            to='/'
-            className={
-              moviesActive
-                ? "inline-flex items-center justify-center text-pink-700 bg-pink-100 rounded-full px-4 py-2 text-sm font-semibold"
-                : "inline-flex items-center justify-center text-gray-700 rounded-full px-4 py-2 text-sm font-semibold hover:bg-gray-100"
-            }
-          >
+        <div className="hidden sm:flex items-center gap-3">
+          <NavLink to='/' className={moviesActive ? "inline-flex items-center justify-center text-pink-700 bg-pink-100 rounded-full px-4 py-2 text-sm font-semibold" : "inline-flex items-center justify-center text-gray-700 rounded-full px-4 py-2 text-sm font-semibold hover:bg-gray-100"}>
             Movies
           </NavLink>
-          <NavLink
-            to='/saved'
-            className={({ isActive }) =>
-              isActive
-                ? "inline-flex items-center justify-center text-blue-700 bg-blue-100 rounded-full px-4 py-2 text-sm font-semibold"
-                : "inline-flex items-center justify-center text-gray-700 rounded-full px-4 py-2 text-sm font-semibold hover:bg-gray-100"
-            }
-          >
+          <NavLink to='/saved' className={({ isActive }) => isActive ? "inline-flex items-center justify-center text-blue-700 bg-blue-100 rounded-full px-4 py-2 text-sm font-semibold" : "inline-flex items-center justify-center text-gray-700 rounded-full px-4 py-2 text-sm font-semibold hover:bg-gray-100"}>
             Yours
           </NavLink>
-          {
-            !props.isloggedIn ? (
-              <NavLink
-                to="/login" 
-                className="inline-flex items-center justify-center text-sm font-semibold px-4 py-2 rounded-full border border-gray-200 hover:border-gray-300"
-                state={{ from: pathname }}
-              >
-                Login
-              </NavLink>
-            ) : (
-              <button
-                onClick={() => {localStorage.removeItem("token");props.setisLoggedIn(false);}}
-                      className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 hover:bg-red-50 text-gray-600 hover:text-red-600 transition"
-
-                title="Logout"
-              >
-                <FiLogOut size={18} />
-              </button>
-            )
-          }
+          {!props.isloggedIn ? (
+            <NavLink to="/login" className="inline-flex items-center justify-center text-sm font-semibold px-4 py-2 rounded-full border border-gray-200" state={{ from: pathname }}>
+              Login
+            </NavLink>
+          ) : (
+            <button onClick={() => { localStorage.removeItem("token"); props.setisLoggedIn(false); }} className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 hover:bg-red-50 text-gray-600 hover:text-red-600 transition">
+              <FiLogOut size={18} />
+            </button>
+          )}
         </div>
+
+        <button className="sm:hidden p-2 rounded-lg hover:bg-gray-100" onClick={() => setMenuOpen(!menuOpen)}>
+          <span className="text-xl">{menuOpen ? '✕' : '☰'}</span>
+        </button>
       </div>
+
+      {menuOpen && (
+        <div className="sm:hidden border-t border-gray-100 bg-white px-4 py-3 flex flex-col gap-2">
+          <NavLink to='/' onClick={() => setMenuOpen(false)} className="text-sm font-medium text-gray-700 py-2">Movies</NavLink>
+          <NavLink to='/saved' onClick={() => setMenuOpen(false)} className="text-sm font-medium text-gray-700 py-2">Yours</NavLink>
+          {!props.isloggedIn ? (
+            <NavLink to="/login" onClick={() => setMenuOpen(false)} className="text-sm font-medium text-gray-700 py-2" state={{ from: pathname }}>Login</NavLink>
+          ) : (
+            <button onClick={() => { localStorage.removeItem("token"); props.setisLoggedIn(false); setMenuOpen(false); }} className="text-left text-sm font-medium text-red-600 py-2">
+              Logout
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }

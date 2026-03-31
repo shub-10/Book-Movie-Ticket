@@ -45,7 +45,7 @@ function App() {
     }
   }, []);
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col m-0 p-0">
       <Navbar cities={cities} selectedCity={selectedCity} setSelectedCity={setSelectedCity} isloggedIn={isloggedIn} setisLoggedIn={setisLoggedIn} />
       <main className="flex-1 bg-gray-50 z-0">
         <Routes>

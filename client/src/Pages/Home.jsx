@@ -16,12 +16,19 @@ const Home = (props) => {
 
     getMovies();
   }, [city]);
+   if (!movies) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div>
+        <div>This will take some time to start the server</div>
+      </div>
+    );
+  }
   const createSlug = (title) => {
     return title.toLowerCase().replace(/\s+/g, "-");
   };
 
   const todayIso = new Date().toISOString().slice(0, 10);
-
   const primeMovie = movies[0];
   const otherMovies = movies.slice(1);
   return (

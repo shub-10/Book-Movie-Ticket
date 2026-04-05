@@ -68,6 +68,7 @@ const getMovieShowsByCityAndDate = async (req, res) => {
  try {
    const { imdbId } = req.params;
    const { city, date } = req.query;
+  //  console.log("date: ", date);
 
    if (!city || !date) {
       return res.status(400).json({ message: 'city and date are required' });
@@ -85,10 +86,13 @@ const getMovieShowsByCityAndDate = async (req, res) => {
    const movieId = movieDetails._id;
    const theatreIds = theatres.map(t => t._id);
  
-   const [y, m, d] = date.split('-').map(Number);
-   const start = new Date(y, m - 1, d, 0, 0, 0, 0);
-   const end = new Date(y, m - 1, d, 23, 59, 59, 999);
- 
+  //  const [y, m, d] = date.split('-').map(Number);
+  //  const start = new Date(y, m - 1, d, 0, 0, 0, 0);
+  //  const end = new Date(y, m - 1, d, 23, 59, 59, 999);
+  const [y, m, d] = date.split('-').map(Number);
+  const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+  const start = new Date(Date.UTC(y, m - 1, d, 0, 0, 0, 0) - IST_OFFSET_MS);
+  const end = new Date(Date.UTC(y, m - 1, d, 23, 59, 59, 999) - IST_OFFSET_MS);
    const shows = await Show.find({ movie: movieId, showdate: { $gte: start, $lte: end }, theatre: { $in: theatreIds } })
      .populate('theatre', 'name location brand').sort({ showtime: 1 });
     const availabledates = await Show.distinct('showdate', { movie: movieId, theatre: { $in: theatreIds } });

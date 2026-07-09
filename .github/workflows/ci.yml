@@ -28,10 +28,30 @@ jobs:
           JWT_SECRET: ${{secrets.JWT_SECRET}}
           PORT: 3000
 
-  deploy:
+  deploy-to-aws:
     needs: test-backend
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    steps: 
-      - name: Deploy on Render
-        run: curl ${{secrets.RENDER_DEPLOY_HOOK_URL}}
+    steps:
+      - name: Deploy via SSH to AWS EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # 1. Navigate to your project directory on EC2
+            cd /home/ubuntu/Book-Movie-Ticket # Ensure this matches your folder name on EC2!
+
+            # 2. Pull the latest code from GitHub
+            git pull origin main
+
+            # 3. Build the React frontend (client)
+            cd client
+            npm install
+            npm run build
+
+            # 4. Install backend dependencies and restart PM2
+            cd ../server
+            npm install
+            pm2 restart movie-backend || pm2 start index.js --name "movie-backend"

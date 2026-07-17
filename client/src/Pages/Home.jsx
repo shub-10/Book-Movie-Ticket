@@ -4,21 +4,19 @@ import axios from 'axios';
 const Home = (props) => {
 
   const city = props.selectedCity;
-  // console.log(city);
   const [movies, setMovies] = useState([]);
   const serverBaseUrl = import.meta.env.VITE_SERVER_BASE_URL;
   useEffect(() => {
     async function getMovies() {
       const response = await axios.get(`${serverBaseUrl}/api/v2/movies`, {params: { city }} );
-      // console.log(response);
       setMovies(response.data.Movies);
     }
 
     getMovies();
   }, [city]);
-   if (!movies) {
+  if (movies.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center">
         <div className="w-10 h-10 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div>
         <div>This will take some time to start the server</div>
       </div>
@@ -27,7 +25,7 @@ const Home = (props) => {
   const createSlug = (title) => {
     return title.toLowerCase().replace(/\s+/g, "-");
   };
-
+  //toISOString()- JavaScript Date object into a standardized, universally understood text string
   const todayIso = new Date().toISOString().slice(0, 10);
   const primeMovie = movies[0];
   const otherMovies = movies.slice(1);
